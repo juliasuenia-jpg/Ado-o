@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' – Adoção de Animais'">Adoção de Animais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Sniglet:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="topo" th:fragment="topo">
+    <div class="topo-interno">
+        <a class="marca" th:href="@{/}">
+            <span class="marca-icone" aria-hidden="true">🐾</span>
+            <span>Adoção de Animais</span>
+        </a>
+        <nav class="nav" aria-label="Principal">
+            <a th:href="@{/animais}">Animais</a>
+            <a th:if="${usuarioLogado != null and !usuarioLogado.admin}" th:href="@{/minhas-solicitacoes}">Minhas solicitações</a>
+            <a th:if="${usuarioLogado != null and usuarioLogado.admin}" th:href="@{/admin}">Solicitações</a>
+            <a th:if="${usuarioLogado != null and usuarioLogado.admin}" th:href="@{/admin/animais}">Gerenciar animais</a>
+        </nav>
+        <div class="conta">
+            <th:block th:if="${usuarioLogado == null}">
+                <a class="link-conta" th:href="@{/login}">Entrar</a>
+                <a class="botao botao-ambar botao-pequeno" th:href="@{/cadastro}">Criar conta</a>
+            </th:block>
+            <th:block th:if="${usuarioLogado != null}">
+                <span class="saudacao" th:text="${usuarioLogado.nome}">Nome</span>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="botao botao-contorno botao-pequeno">Sair</button>
+                </form>
+            </th:block>
+        </div>
+    </div>
+</header>
+
+<div th:fragment="avisos" class="avisos">
+    <p class="aviso aviso-ok" role="status" th:if="${sucesso != null}" th:text="${sucesso}"></p>
+    <p class="aviso aviso-erro" role="alert" th:if="${erro != null}" th:text="${erro}"></p>
+</div>
+
+<a th:fragment="cartao(animal)" class="cartao-animal" th:href="@{/animais/{id}(id=${animal.id})}">
+    <div class="cartao-foto">
+        <img th:if="${animal.foto != null}" th:src="@{/uploads/{f}(f=${animal.foto})}" th:alt="'Foto de ' + ${animal.nome}" loading="lazy">
+        <span th:unless="${animal.foto != null}" class="sem-foto" aria-hidden="true" th:text="${animal.especie.emoji}">🐾</span>
+        <span class="selo selo-sobre-foto" th:classappend="'selo-' + ${animal.status.css}"
+              th:if="${animal.status.name() != 'DISPONIVEL'}" th:text="${animal.status.rotulo}">Adotado</span>
+    </div>
+    <div class="cartao-corpo">
+        <h3 th:text="${animal.nome}">Nome</h3>
+        <div class="chips">
+            <span class="chip" th:text="${animal.especie.rotulo}">Cachorro</span>
+            <span class="chip" th:text="${animal.porte.rotulo}">Médio</span>
+            <span class="chip" th:text="${animal.sexo.rotulo}">Macho</span>
+            <span class="chip" th:text="${animal.idadeTexto}">2 anos</span>
+        </div>
+        <p class="cartao-local" th:text="${animal.cidade}">Cidade</p>
+    </div>
+</a>
+
+<footer class="rodape" th:fragment="rodape">
+    <div class="rodape-interno">
+        <p><strong>Plataforma de Adoção de Animais</strong><br>Projeto final desenvolvido por Júlia Suênia, Letícia Moura e Mariana Beatriz.</p>
+        <p class="rodape-nota">Adotar é um compromisso para toda a vida do animal.</p>
+    </div>
+</footer>
+
+</body>
+</html>

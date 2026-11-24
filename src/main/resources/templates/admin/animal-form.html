@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Cadastro de animal')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="estreito" style="width:min(820px,92%)">
+    <p><a th:href="@{/admin/animais}">Voltar para a lista</a></p>
+    <h1 th:text="${animalId == null} ? 'Cadastrar animal' : 'Editar animal'">Cadastrar animal</h1>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <form class="painel" enctype="multipart/form-data" method="post"
+          th:action="${animalId == null} ? @{/admin/animais} : @{/admin/animais/{id}(id=${animalId})}"
+          th:object="${form}">
+        <div style="display:grid;gap:1.3rem">
+            <fieldset>
+                <legend>Perfil</legend>
+                <div class="form-grade">
+                    <div class="campo">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" th:field="*{nome}" maxlength="80" required>
+                    </div>
+                    <div class="campo">
+                        <label for="especie">Espécie</label>
+                        <select id="especie" th:field="*{especie}">
+                            <option th:each="e : ${especies}" th:value="${e}" th:text="${e.rotulo}">Cachorro</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="raca">Raça</label>
+                        <input type="text" id="raca" th:field="*{raca}" maxlength="80" placeholder="Ex.: SRD, Poodle">
+                    </div>
+                    <div class="campo">
+                        <label for="porte">Porte</label>
+                        <select id="porte" th:field="*{porte}">
+                            <option th:each="p : ${portes}" th:value="${p}" th:text="${p.rotulo}">Médio</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="sexo">Sexo</label>
+                        <select id="sexo" th:field="*{sexo}">
+                            <option th:each="s : ${sexos}" th:value="${s}" th:text="${s.rotulo}">Macho</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="cidade">Cidade onde está</label>
+                        <input type="text" id="cidade" th:field="*{cidade}" maxlength="100" required>
+                    </div>
+                    <div class="campo">
+                        <label for="idadeAnos">Idade: anos</label>
+                        <input type="number" id="idadeAnos" th:field="*{idadeAnos}" min="0" max="30">
+                    </div>
+                    <div class="campo">
+                        <label for="idadeMeses">Idade: meses</label>
+                        <input type="number" id="idadeMeses" th:field="*{idadeMeses}" min="0" max="11">
+                    </div>
+                    <div class="campo largo">
+                        <label class="marcar"><input type="checkbox" th:field="*{convivePets}"><span>Convive bem com outros animais</span></label>
+                    </div>
+                    <div class="campo largo">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" th:field="*{descricao}" maxlength="1000" placeholder="Personalidade, hábitos e cuidados especiais"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Ficha médica</legend>
+                <div class="form-grade">
+                    <label class="marcar"><input type="checkbox" th:field="*{vacinado}"><span>Vacinado</span></label>
+                    <label class="marcar"><input type="checkbox" th:field="*{castrado}"><span>Castrado</span></label>
+                    <label class="marcar"><input type="checkbox" th:field="*{vermifugado}"><span>Vermifugado</span></label>
+                    <div class="campo largo">
+                        <label for="observacoesSaude">Observações de saúde</label>
+                        <textarea id="observacoesSaude" th:field="*{observacoesSaude}" maxlength="1000"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Foto e situação</legend>
+                <div class="form-grade">
+                    <div class="campo largo">
+                        <label for="foto">Foto</label>
+                        <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp">
+                        <p class="dica" th:if="${fotoAtual != null}">Já existe uma foto. Envie outra só se quiser substituí-la.</p>
+                        <p class="dica">JPG, PNG ou WEBP, até 5 MB.</p>
+                    </div>
+                    <div class="campo" th:if="${animalId != null}">
+                        <label for="status">Situação</label>
+                        <select id="status" th:field="*{status}">
+                            <option th:each="st : ${statusAnimais}" th:value="${st}" th:text="${st.rotulo}">Disponível</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="acoes-form">
+            <button type="submit" class="botao botao-escuro">Salvar</button>
+            <a class="botao botao-contorno-escuro" th:href="@{/admin/animais}">Cancelar</a>
+        </div>
+    </form>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

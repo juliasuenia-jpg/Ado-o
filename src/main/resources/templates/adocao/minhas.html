@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Minhas solicitações')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="container" style="max-width:860px">
+    <h1 class="pagina-titulo">Minhas solicitações</h1>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <p class="vazio" th:if="${solicitacoes.isEmpty()}">
+        Você ainda não pediu nenhuma adoção. <a th:href="@{/animais}">Conheça os animais disponíveis.</a>
+    </p>
+
+    <article class="painel cartao-solicitacao" th:each="s : ${solicitacoes}">
+        <div class="topo-card">
+            <div>
+                <h3 style="margin:0"><a th:href="@{/animais/{id}(id=${s.animal.id})}" th:text="${s.animal.nome}">Nome</a></h3>
+                <p class="dica" th:text="'Enviada em ' + ${#temporals.format(s.criadoEm, 'dd/MM/yyyy')}">Enviada em 01/01/2026</p>
+            </div>
+            <span class="selo" th:classappend="'selo-' + ${s.status.css}" th:text="${s.status.rotulo}">Pendente</span>
+        </div>
+        <p style="margin:.4rem 0 0">Visita sugerida para <strong th:text="${#temporals.format(s.dataVisita, 'dd/MM/yyyy')}">01/01/2026</strong>.</p>
+        <p class="parecer" th:if="${s.parecerOng != null}"><strong>Retorno da ONG:</strong> <span th:text="${s.parecerOng}">Texto</span></p>
+    </article>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Início')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+
+<section class="hero">
+    <span class="forma forma-ambar" aria-hidden="true"></span>
+    <span class="forma forma-areia" aria-hidden="true"></span>
+    <svg class="rabisco rabisco-1" viewBox="0 0 120 120" aria-hidden="true"><path d="M20 90 C 5 40, 70 10, 80 45 S 40 100, 60 70 S 110 40, 100 20" /></svg>
+    <div class="hero-interno">
+        <div class="hero-texto">
+            <h1>Encontre o animal que vai mudar a sua rotina</h1>
+            <p>Reunimos ONGs de proteção animal e protetores independentes em um só lugar, do primeiro contato até a adoção finalizada.</p>
+            <div class="hero-acoes">
+                <a class="botao botao-ambar" th:href="@{/animais}">Ver animais para adoção</a>
+                <a class="botao botao-contorno" th:if="${usuarioLogado == null}" th:href="@{/cadastro}">Criar conta</a>
+            </div>
+        </div>
+        <div class="hero-numeros" aria-label="Resumo da plataforma">
+            <div class="numero">
+                <strong th:text="${totalDisponiveis}">0</strong>
+                <span>esperando um lar</span>
+            </div>
+            <div class="numero numero-claro">
+                <strong th:text="${totalAdotados}">0</strong>
+                <span>já adotados</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main>
+    <div class="container">
+        <div th:replace="~{fragments/layout :: avisos}"></div>
+
+        <section class="secao">
+            <h2>Quem você quer conhecer?</h2>
+            <div class="atalhos">
+                <a class="atalho" th:href="@{/animais(especie='CACHORRO')}"><span aria-hidden="true">🐶</span> Cachorros</a>
+                <a class="atalho" th:href="@{/animais(especie='GATO')}"><span aria-hidden="true">🐱</span> Gatos</a>
+                <a class="atalho" th:href="@{/animais(especie='OUTRO')}"><span aria-hidden="true">🐾</span> Outros animais</a>
+                <a class="atalho" th:href="@{/animais(faixaEtaria='FILHOTE')}"><span aria-hidden="true">🍼</span> Filhotes</a>
+            </div>
+        </section>
+
+        <section class="secao">
+            <div class="secao-cabecalho">
+                <h2>Chegaram recentemente</h2>
+                <a th:href="@{/animais}">Ver todos</a>
+            </div>
+            <div class="grade-animais" th:if="${!recentes.isEmpty()}">
+                <th:block th:each="a : ${recentes}">
+                    <a th:replace="~{fragments/layout :: cartao(${a})}"></a>
+                </th:block>
+            </div>
+            <p class="vazio" th:if="${recentes.isEmpty()}">Ainda não há animais cadastrados. Volte em breve!</p>
+        </section>
+
+        <section class="secao">
+            <h2>Como funciona a adoção</h2>
+            <ol class="passos">
+                <li><h3>Escolha</h3><p>Filtre por espécie, porte, idade, sexo, cidade e convivência com outros animais.</p></li>
+                <li><h3>Responda ao questionário</h3><p>Algumas perguntas sobre sua casa e sua rotina ajudam a ONG a avaliar se o animal combina com você.</p></li>
+                <li><h3>Agende a visita</h3><p>Sugira um dia para conhecer o animal pessoalmente.</p></li>
+                <li><h3>Acompanhe</h3><p>Veja se sua solicitação está pendente, em análise, aprovada ou recusada e leia o retorno da ONG.</p></li>
+            </ol>
+        </section>
+
+        <section class="secao">
+            <h2>Por que essa plataforma existe</h2>
+            <div class="tres-colunas">
+                <article class="bloco">
+                    <h3>Adoção responsável</h3>
+                    <p>A triagem antes da visita reduz adoções por impulso e devoluções, e ajuda a diminuir o número de animais abandonados nas ruas.</p>
+                </article>
+                <article class="bloco">
+                    <h3>Menos trabalho manual para as ONGs</h3>
+                    <p>Os dados dos candidatos chegam organizados, sem repetir as mesmas perguntas por mensagem privada.</p>
+                </article>
+                <article class="bloco">
+                    <h3>Histórico de saúde à vista</h3>
+                    <p>Vacinas, castração e vermifugação ficam no perfil de cada animal, e o andamento da solicitação aparece em tempo real.</p>
+                </article>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

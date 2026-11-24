@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Gerenciar animais')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="container">
+    <div class="barra-titulo">
+        <h1>Gerenciar animais</h1>
+        <a class="botao botao-escuro" th:href="@{/admin/animais/novo}">Cadastrar animal</a>
+    </div>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <p class="vazio" th:if="${animais.isEmpty()}">Nenhum animal cadastrado ainda.</p>
+
+    <div class="tabela-rolagem" th:if="${!animais.isEmpty()}">
+        <table>
+            <thead>
+                <tr><th>Animal</th><th>Espécie</th><th>Porte</th><th>Idade</th><th>Cidade</th><th>Status</th><th><span class="sr-only">Ações</span></th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="a : ${animais}">
+                    <td><a th:href="@{/animais/{id}(id=${a.id})}"><strong th:text="${a.nome}">Nome</strong></a></td>
+                    <td th:text="${a.especie.rotulo}">Cachorro</td>
+                    <td th:text="${a.porte.rotulo}">Médio</td>
+                    <td th:text="${a.idadeTexto}">2 anos</td>
+                    <td th:text="${a.cidade}">Cidade</td>
+                    <td><span class="selo" th:classappend="'selo-' + ${a.status.css}" th:text="${a.status.rotulo}">Disponível</span></td>
+                    <td>
+                        <div class="acoes-tabela">
+                            <a class="botao botao-contorno-escuro botao-pequeno" th:href="@{/admin/animais/{id}/editar(id=${a.id})}">Editar</a>
+                            <form th:action="@{/admin/animais/{id}/excluir(id=${a.id})}" method="post"
+                                  onsubmit="return confirm('Remover este animal? Esta ação não pode ser desfeita.');">
+                                <button type="submit" class="botao botao-perigo botao-pequeno">Remover</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

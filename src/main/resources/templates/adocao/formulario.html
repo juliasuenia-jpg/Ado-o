@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Questionário de adoção')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="estreito" style="width:min(760px,92%)">
+    <p><a th:href="@{/animais/{id}(id=${animal.id})}">Voltar para o perfil</a></p>
+    <h1>Questionário de adoção</h1>
+    <p>Suas respostas ajudam a ONG a conferir se a rotina e a casa combinam com as necessidades do animal. Depois de enviado, você escolhe a data da visita.</p>
+
+    <div class="resumo-animal">
+        <div class="miniatura">
+            <img th:if="${animal.foto != null}" th:src="@{/uploads/{f}(f=${animal.foto})}" th:alt="'Foto de ' + ${animal.nome}">
+            <span th:unless="${animal.foto != null}" aria-hidden="true" th:text="${animal.especie.emoji}">🐾</span>
+        </div>
+        <div>
+            <h3 th:text="${animal.nome}">Nome</h3>
+            <p th:text="${animal.porte.rotulo} + ', ' + ${animal.idadeTexto} + ', ' + ${animal.cidade}">Médio, 2 anos, Natal</p>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <form class="painel" th:action="@{/animais/{id}/adotar(id=${animal.id})}" th:object="${form}" method="post">
+        <div style="display:grid;gap:1.3rem">
+            <fieldset>
+                <legend>Sua moradia</legend>
+                <div class="form-grade">
+                    <div class="campo">
+                        <label for="tipoMoradia">Tipo de moradia</label>
+                        <select id="tipoMoradia" th:field="*{tipoMoradia}" required>
+                            <option value="">Selecione</option>
+                            <option value="Casa">Casa</option>
+                            <option value="Apartamento">Apartamento</option>
+                            <option value="Sítio ou chácara">Sítio ou chácara</option>
+                        </select>
+                    </div>
+                    <div class="campo" style="justify-content:end;gap:.7rem">
+                        <label class="marcar"><input type="checkbox" th:field="*{possuiQuintal}"><span>Tenho quintal ou área externa</span></label>
+                        <label class="marcar"><input type="checkbox" th:field="*{moradiaPermiteAnimais}"><span>O local onde moro permite animais</span></label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Sua rotina</legend>
+                <div class="form-grade">
+                    <div class="campo">
+                        <label for="horasSozinho">Horas por dia que o animal ficaria sozinho</label>
+                        <input type="number" id="horasSozinho" th:field="*{horasSozinho}" min="0" max="24" required>
+                    </div>
+                    <div class="campo" style="justify-content:end;gap:.7rem">
+                        <label class="marcar"><input type="checkbox" th:field="*{experiencia}"><span>Já tive animais de estimação</span></label>
+                        <label class="marcar"><input type="checkbox" th:field="*{todosConcordam}"><span>Todos que moram comigo concordam com a adoção</span></label>
+                    </div>
+                    <div class="campo largo">
+                        <label class="marcar"><input type="checkbox" th:field="*{outrosAnimais}"><span>Tenho outros animais em casa</span></label>
+                    </div>
+                    <div class="campo largo">
+                        <label for="descricaoOutrosAnimais">Quais? (espécie e quantidade)</label>
+                        <input type="text" id="descricaoOutrosAnimais" th:field="*{descricaoOutrosAnimais}" maxlength="300">
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Sua motivação</legend>
+                <div class="campo">
+                    <label for="motivo">Por que você quer adotar <span th:text="${animal.nome}">o animal</span>?</label>
+                    <textarea id="motivo" th:field="*{motivo}" maxlength="1000" required></textarea>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Visita</legend>
+                <div class="form-grade">
+                    <div class="campo">
+                        <label for="dataVisita">Data sugerida para a visita</label>
+                        <input type="date" id="dataVisita" th:field="*{dataVisita}" th:min="${amanha}" required>
+                        <p class="dica">A ONG confirma o horário com você.</p>
+                    </div>
+                    <div class="campo" style="justify-content:end">
+                        <label class="marcar"><input type="checkbox" th:field="*{aceitaTermo}"><span>Me comprometo a cuidar do animal durante toda a vida dele, com alimentação, atendimento veterinário e carinho, e não abandoná-lo.</span></label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="acoes-form">
+            <button type="submit" class="botao botao-escuro">Enviar solicitação</button>
+            <a class="botao botao-contorno-escuro" th:href="@{/animais/{id}(id=${animal.id})}">Cancelar</a>
+        </div>
+    </form>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

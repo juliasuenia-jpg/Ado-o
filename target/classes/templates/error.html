@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Ops')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="estreito">
+    <h1 th:text="${status == 404} ? 'Página não encontrada' : (${status == 403} ? 'Acesso negado' : 'Algo deu errado')">Algo deu errado</h1>
+    <p th:if="${status == 404}">Não achamos o que você procurava. Que tal ver os animais disponíveis?</p>
+    <p th:if="${status == 403}">Seu perfil não tem permissão para acessar esta página.</p>
+    <p th:if="${status != 404 and status != 403}">Tente novamente em instantes.</p>
+    <a class="botao botao-escuro" th:href="@{/animais}">Ver animais</a>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

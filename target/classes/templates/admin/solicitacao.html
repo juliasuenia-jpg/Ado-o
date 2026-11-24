@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Analisar solicitação')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="container">
+    <p><a th:href="@{/admin}">Voltar para as solicitações</a></p>
+    <div class="barra-titulo">
+        <h1>Solicitação para <span th:text="${s.animal.nome}">animal</span></h1>
+        <span class="selo" th:classappend="'selo-' + ${s.status.css}" th:text="${s.status.rotulo}">Pendente</span>
+    </div>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <div class="duas-colunas">
+        <div style="display:grid;gap:1.2rem">
+            <section class="painel">
+                <h3>Candidato</h3>
+                <dl class="respostas">
+                    <div><dt>Nome</dt><dd th:text="${s.adotante.nome}">Nome</dd></div>
+                    <div><dt>E-mail</dt><dd th:text="${s.adotante.email}">email</dd></div>
+                    <div><dt>Telefone</dt><dd th:text="${s.adotante.telefone != null} ? ${s.adotante.telefone} : 'Não informado'">telefone</dd></div>
+                    <div><dt>Cidade</dt><dd th:text="${s.adotante.cidade != null} ? ${s.adotante.cidade} : 'Não informada'">cidade</dd></div>
+                </dl>
+            </section>
+
+            <section class="painel">
+                <h3>Respostas do questionário</h3>
+                <dl class="respostas">
+                    <div><dt>Tipo de moradia</dt><dd th:text="${s.tipoMoradia}">Casa</dd></div>
+                    <div><dt>Quintal ou área externa</dt><dd th:text="${s.possuiQuintal} ? 'Sim' : 'Não'">Sim</dd></div>
+                    <div><dt>Moradia permite animais</dt><dd th:text="${s.moradiaPermiteAnimais} ? 'Sim' : 'Não'">Sim</dd></div>
+                    <div><dt>Já teve animais</dt><dd th:text="${s.experiencia} ? 'Sim' : 'Não'">Sim</dd></div>
+                    <div><dt>Horas sozinho por dia</dt><dd th:text="${s.horasSozinho} + ' h'">8 h</dd></div>
+                    <div><dt>Todos da casa concordam</dt><dd th:text="${s.todosConcordam} ? 'Sim' : 'Não'">Sim</dd></div>
+                    <div><dt>Outros animais em casa</dt>
+                        <dd th:text="${s.outrosAnimais} ? (${s.descricaoOutrosAnimais != null} ? ${s.descricaoOutrosAnimais} : 'Sim') : 'Não'">Não</dd></div>
+                    <div><dt>Termo de responsabilidade</dt><dd th:text="${s.aceitaTermo} ? 'Aceito' : 'Não aceito'">Aceito</dd></div>
+                    <div><dt>Visita sugerida</dt><dd th:text="${#temporals.format(s.dataVisita, 'dd/MM/yyyy')}">01/01/2026</dd></div>
+                    <div><dt>Compatibilidade automática</dt><dd th:text="${s.compatibilidade} + ' de 100'">80 de 100</dd></div>
+                </dl>
+                <h3 style="margin-top:1.2rem">Motivo da adoção</h3>
+                <p style="margin:0;white-space:pre-line" th:text="${s.motivo}">Motivo</p>
+            </section>
+        </div>
+
+        <div style="display:grid;gap:1.2rem">
+            <section class="painel">
+                <h3>Animal</h3>
+                <p style="margin:0 0 .6rem"><a th:href="@{/animais/{id}(id=${s.animal.id})}" th:text="${s.animal.nome}">Nome</a>,
+                    <span th:text="${s.animal.porte.rotulo} + ', ' + ${s.animal.idadeTexto}">Médio, 2 anos</span></p>
+                <span class="selo" th:classappend="'selo-' + ${s.animal.status.css}" th:text="${s.animal.status.rotulo}">Disponível</span>
+            </section>
+
+            <section class="painel">
+                <h3>Decisão da ONG</h3>
+                <form th:action="@{/admin/solicitacoes/{id}/status(id=${s.id})}" method="post">
+                    <div class="campo">
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <option th:each="st : ${statusSolicitacoes}" th:value="${st}" th:text="${st.rotulo}" th:selected="${st == s.status}">Pendente</option>
+                        </select>
+                    </div>
+                    <div class="campo" style="margin-top:1rem">
+                        <label for="parecer">Retorno para o adotante</label>
+                        <textarea id="parecer" name="parecer" maxlength="1000" th:text="${s.parecerOng}"></textarea>
+                        <p class="dica">Aprovar marca o animal como adotado e recusa automaticamente os outros pedidos em aberto.</p>
+                    </div>
+                    <div class="acoes-form">
+                        <button type="submit" class="botao botao-escuro">Salvar</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

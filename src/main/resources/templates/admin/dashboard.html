@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Solicitações')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="container">
+    <h1 class="pagina-titulo">Solicitações de adoção</h1>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <div class="estatisticas">
+        <a class="estatistica" th:classappend="${filtroStatus == null} ? 'ativa'" th:href="@{/admin}">
+            <strong th:text="${qtdPendentes + qtdEmAnalise + qtdAprovadas + qtdRecusadas}">0</strong>Todas</a>
+        <a class="estatistica" th:classappend="${filtroStatus != null and filtroStatus.name() == 'PENDENTE'} ? 'ativa'" th:href="@{/admin(status='PENDENTE')}">
+            <strong th:text="${qtdPendentes}">0</strong>Pendentes</a>
+        <a class="estatistica" th:classappend="${filtroStatus != null and filtroStatus.name() == 'EM_ANALISE'} ? 'ativa'" th:href="@{/admin(status='EM_ANALISE')}">
+            <strong th:text="${qtdEmAnalise}">0</strong>Em análise</a>
+        <a class="estatistica" th:classappend="${filtroStatus != null and filtroStatus.name() == 'APROVADO'} ? 'ativa'" th:href="@{/admin(status='APROVADO')}">
+            <strong th:text="${qtdAprovadas}">0</strong>Aprovadas</a>
+        <a class="estatistica" th:classappend="${filtroStatus != null and filtroStatus.name() == 'RECUSADO'} ? 'ativa'" th:href="@{/admin(status='RECUSADO')}">
+            <strong th:text="${qtdRecusadas}">0</strong>Recusadas</a>
+    </div>
+
+    <p class="vazio" th:if="${lista.isEmpty()}">Nenhuma solicitação por aqui.</p>
+
+    <div class="tabela-rolagem" th:if="${!lista.isEmpty()}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Candidato</th>
+                    <th>Animal</th>
+                    <th>Compatibilidade</th>
+                    <th>Visita</th>
+                    <th>Enviada em</th>
+                    <th>Status</th>
+                    <th><span class="sr-only">Ações</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="s : ${lista}">
+                    <td>
+                        <strong th:text="${s.adotante.nome}">Nome</strong><br>
+                        <span class="dica" th:text="${s.adotante.email}">email</span>
+                    </td>
+                    <td th:text="${s.animal.nome}">Animal</td>
+                    <td><span class="nota" th:classappend="${s.compatibilidade ge 70} ? 'nota-alta' : (${s.compatibilidade lt 40} ? 'nota-baixa')" th:text="${s.compatibilidade}">80</span></td>
+                    <td th:text="${#temporals.format(s.dataVisita, 'dd/MM/yyyy')}">01/01/2026</td>
+                    <td th:text="${#temporals.format(s.criadoEm, 'dd/MM/yyyy')}">01/01/2026</td>
+                    <td><span class="selo" th:classappend="'selo-' + ${s.status.css}" th:text="${s.status.rotulo}">Pendente</span></td>
+                    <td><a class="botao botao-contorno-escuro botao-pequeno" th:href="@{/admin/solicitacoes/{id}(id=${s.id})}">Analisar</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="dica" style="margin-top:.8rem">A compatibilidade é calculada automaticamente a partir do questionário e serve só de apoio. A decisão é da ONG.</p>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Animais para adoção')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="container">
+    <h1 class="pagina-titulo">Animais para adoção</h1>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <form class="filtros" th:action="@{/animais}" th:object="${filtro}" method="get">
+        <div class="campo">
+            <label for="especie">Espécie</label>
+            <select id="especie" th:field="*{especie}">
+                <option value="">Todas</option>
+                <option th:each="e : ${especies}" th:value="${e}" th:text="${e.rotulo}">Cachorro</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="porte">Porte</label>
+            <select id="porte" th:field="*{porte}">
+                <option value="">Todos</option>
+                <option th:each="p : ${portes}" th:value="${p}" th:text="${p.rotulo}">Médio</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="faixaEtaria">Idade</label>
+            <select id="faixaEtaria" th:field="*{faixaEtaria}">
+                <option value="">Qualquer idade</option>
+                <option th:each="f : ${faixas}" th:value="${f}" th:text="${f.rotulo}">Filhote</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="sexo">Sexo</label>
+            <select id="sexo" th:field="*{sexo}">
+                <option value="">Todos</option>
+                <option th:each="s : ${sexos}" th:value="${s}" th:text="${s.rotulo}">Macho</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="cidade">Cidade</label>
+            <input type="text" id="cidade" th:field="*{cidade}" placeholder="Ex.: Natal">
+        </div>
+        <div class="campo">
+            <label for="convivePets">Convive com outros pets</label>
+            <select id="convivePets" th:field="*{convivePets}">
+                <option value="">Tanto faz</option>
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
+            </select>
+        </div>
+        <div class="filtros-acoes">
+            <button type="submit" class="botao botao-escuro">Filtrar</button>
+            <a th:if="${!filtro.vazio}" th:href="@{/animais}">Limpar</a>
+        </div>
+    </form>
+
+    <p class="secao" th:text="${resultado.size()} + (${resultado.size() == 1} ? ' animal encontrado' : ' animais encontrados')">3 animais encontrados</p>
+    <div class="grade-animais" th:if="${!resultado.isEmpty()}">
+        <th:block th:each="a : ${resultado}">
+            <a th:replace="~{fragments/layout :: cartao(${a})}"></a>
+        </th:block>
+    </div>
+    <p class="vazio" th:if="${resultado.isEmpty()}">Nenhum animal combina com esses filtros. Tente remover algum deles.</p>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

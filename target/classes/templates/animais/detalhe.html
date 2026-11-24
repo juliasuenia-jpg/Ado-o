@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${animal.nome})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="container">
+    <p><a th:href="@{/animais}">Voltar para a lista</a></p>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <article class="detalhe">
+        <div class="detalhe-foto">
+            <img th:if="${animal.foto != null}" th:src="@{/uploads/{f}(f=${animal.foto})}" th:alt="'Foto de ' + ${animal.nome}">
+            <span th:unless="${animal.foto != null}" class="sem-foto" aria-hidden="true" th:text="${animal.especie.emoji}">🐾</span>
+        </div>
+
+        <div>
+            <h1 th:text="${animal.nome}">Nome</h1>
+            <div class="chips">
+                <span class="selo" th:classappend="'selo-' + ${animal.status.css}" th:text="${animal.status.rotulo}">Disponível</span>
+                <span class="chip" th:text="${animal.especie.rotulo}">Cachorro</span>
+                <span class="chip" th:if="${animal.raca != null}" th:text="${animal.raca}">Raça</span>
+                <span class="chip" th:text="'Porte ' + ${#strings.toLowerCase(animal.porte.rotulo)}">Porte médio</span>
+                <span class="chip" th:text="${animal.sexo.rotulo}">Macho</span>
+                <span class="chip" th:text="${animal.idadeTexto}">2 anos</span>
+                <span class="chip" th:text="${animal.cidade}">Cidade</span>
+            </div>
+
+            <p style="margin-top:1rem" th:if="${animal.descricao != null}" th:text="${animal.descricao}">Descrição</p>
+            <p th:text="${animal.convivePets} ? 'Convive bem com outros animais.' : 'Prefere ser o único animal da casa.'">Convivência</p>
+
+            <section class="ficha">
+                <h3>Ficha médica</h3>
+                <div class="chips">
+                    <span class="chip" th:classappend="${animal.vacinado} ? 'chip-ok' : 'chip-nao'" th:text="${animal.vacinado} ? 'Vacinado' : 'Vacinas pendentes'">Vacinado</span>
+                    <span class="chip" th:classappend="${animal.castrado} ? 'chip-ok' : 'chip-nao'" th:text="${animal.castrado} ? 'Castrado' : 'Não castrado'">Castrado</span>
+                    <span class="chip" th:classappend="${animal.vermifugado} ? 'chip-ok' : 'chip-nao'" th:text="${animal.vermifugado} ? 'Vermifugado' : 'Vermifugação pendente'">Vermifugado</span>
+                </div>
+                <p th:if="${animal.observacoesSaude != null}" th:text="${animal.observacoesSaude}">Observações</p>
+            </section>
+
+            <div class="chamada">
+                <p class="aviso-fixo" th:if="${animal.status.name() == 'ADOTADO'}">Este animal já encontrou um lar.</p>
+
+                <th:block th:if="${animal.status.name() == 'DISPONIVEL'}">
+                    <a class="botao botao-escuro" th:if="${usuarioLogado == null}" th:href="@{/login}">Entre para solicitar a adoção</a>
+                    <a class="botao botao-escuro" th:if="${usuarioLogado != null and !usuarioLogado.admin}"
+                       th:href="@{/animais/{id}/adotar(id=${animal.id})}">Quero adotar o <span th:text="${animal.nome}">animal</span></a>
+                </th:block>
+                <a class="botao botao-contorno-escuro" th:if="${usuarioLogado != null and usuarioLogado.admin}"
+                   th:href="@{/admin/animais/{id}/editar(id=${animal.id})}">Editar cadastro</a>
+            </div>
+        </div>
+    </article>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

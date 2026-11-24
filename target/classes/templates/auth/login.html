@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Entrar')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: topo}"></header>
+<main class="estreito">
+    <h1>Entrar</h1>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+    <p class="aviso aviso-erro" role="alert" th:if="${param.error != null}">E-mail ou senha incorretos.</p>
+    <p class="aviso aviso-ok" role="status" th:if="${param.logout != null}">Você saiu da sua conta.</p>
+    <form class="painel" th:action="@{/login}" method="post">
+        <div class="form-grade">
+            <div class="campo largo">
+                <label for="username">E-mail</label>
+                <input type="email" id="username" name="username" autocomplete="username" required autofocus>
+            </div>
+            <div class="campo largo">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+            </div>
+        </div>
+        <div class="acoes-form">
+            <button type="submit" class="botao botao-escuro">Entrar</button>
+        </div>
+        <p class="rodape-form">Ainda não tem conta? <a th:href="@{/cadastro}">Criar conta de adotante</a></p>
+    </form>
+</main>
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>
